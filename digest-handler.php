@@ -28,7 +28,7 @@ function dataHandler($data)
         '~<p><strong>(.*)</strong></p>~Uui',
         '~<h1>(.*)</h1>~uUi',
         '~(</h\d>)\r?\n\s*<p>([a-zа-я])(.*)</p>~uU',
-        '~-?</p>(\r?\n\s*)*<p>([a-zа-я])~uU',
+        '~-</p>(\r?\n\s*)*<p>([a-zа-я])~uU',
         '~\r?\n\s*([a-zа-я])~Uu',
         '~([a-zа-я])</p>\r?\n\s*<p>([a-zа-я]|\d)~Uu',
         '~(target="_blank")|(<span style="text-decoration: underline;">)|(</span>)|(- )~Uui',
@@ -36,7 +36,8 @@ function dataHandler($data)
         '~ {2,}~uUi',
         '~(\r?\n){2,}~uUi',
         '~(&nbsp;)~uUi',
-        '~<a(.*)href="(.*)"(.*)>(.*)</a>.*<a.*href="\2".*>(.*)</a>~uUi'
+        '~<a(.*)href="(.*)"(.*)>(.*)</a>.*<a.*href="\2".*>(.*)</a>~uUi',
+        '~- ~'
     ];
 
     $replacements = [
@@ -45,7 +46,7 @@ function dataHandler($data)
         '<h3>$1</h3>',
         '<h3>$1</h3>',
         ' $2$3$1',
-        '$1',
+        '$1$2',
         '$1',
         '$1 $2',
         '',
@@ -53,7 +54,8 @@ function dataHandler($data)
         ' ',
         "\n",
         '',
-        '<a $1 href="$2" $3>$4 $5</a>'
+        '<a $1 href="$2" $3>$4 $5</a>',
+        ''
     ];
 
     return preg_replace($patterns, $replacements, $data);
@@ -108,6 +110,7 @@ function parse()
 {
     if (filter_has_var(INPUT_POST, 'inner')) {
         $inner = filter_input(INPUT_POST, 'inner');
+//        g($inner); exit;
         $result = dataHandler($inner);
         if (!filter_has_var(INPUT_POST, 'img'))
             return $result;
