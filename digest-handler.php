@@ -43,8 +43,8 @@ function dataHandler($data)
     $replacements = [
         '',
         '$1 ',
-        '<h3>$1</h3>',
-        '<h3>$1</h3>',
+        "\n</div>\n<div class=\"no-page-break\">\n<h3>$1</h3>",
+        "\n</div>\n<div class=\"no-page-break\">\n<h3>$1</h3>",
         ' $2$3$1',
         '$1$2',
         '$1',
@@ -113,10 +113,10 @@ function parse()
 //        g($inner); exit;
         $result = dataHandler($inner);
         if (!filter_has_var(INPUT_POST, 'img'))
-            return $result;
+            return preg_replace('~</div>~', '', $result, 1) . '</div>';
 
         $img = filter_input(INPUT_POST, 'img');
-        return imageHandler($img, $result);
+        return preg_replace('~</div>~', '', imageHandler($img, $result), 1)  . '</div>';
     }
     return null;
 }
